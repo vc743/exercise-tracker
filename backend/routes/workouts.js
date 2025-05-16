@@ -1,4 +1,5 @@
 const express = require("express");
+const Workouts = require("../models/workoutModel");
 
 const router = express.Router();
 
