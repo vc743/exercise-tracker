@@ -1,7 +1,5 @@
-/* google font */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;800&family=VT323&display=swap");
 
-/* layout */
 :root {
   --primary: #1aac83;
   --error: #e7195a;
@@ -38,6 +36,7 @@ header a {
   grid-template-columns: 3fr 1fr;
   gap: 100px;
 }
+
 .workout-details {
   background: #fff;
   border-radius: 4px;
@@ -65,6 +64,28 @@ header a {
   padding: 6px;
   border-radius: 50%;
   color: #333;
+}
+
+@media screen and (max-width: 768px) {
+  .home {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    grid-template-areas: 
+      "form"
+      "workouts";
+  }
+
+  .workout-form {
+    grid-area: form;
+  }
+
+  .workouts {
+    grid-area: workouts;
+  }
+  
+  .workout-details {
+    margin: 10px auto;
+  }
 }
 
 label,

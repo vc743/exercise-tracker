@@ -27,7 +27,9 @@ const Home = () => {
           <WorkoutDetails key={workout._id} workout={workout} />
         ))}
       </div>
-      <WorkoutForm />
+      <div className="workout-form">
+        <WorkoutForm />
+      </div>
     </div>
   )
 }
