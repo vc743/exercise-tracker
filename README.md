@@ -6,7 +6,7 @@ A full-stack MERN (MongoDB, Express, React, Node.js) application that helps user
 
 - Create new workout entries
 - View all workouts
-- Edit existing workouts (working on it 🛠️)
+- Edit existing workouts
 - Delete workouts
 - Real-time updates
 - Responsive design for both desktop and mobile devices
