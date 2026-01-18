@@ -38,7 +38,7 @@ Before running this project, make sure you have the following installed:
 1. Clone the repository:
 ```bash
 git clone <repository-url>
-cd Exercise-Tracker
+cd exercise-tracker
 ```
 
 2. Install backend dependencies:
