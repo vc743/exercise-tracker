@@ -45,6 +45,11 @@ header a {
   position: relative;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
 }
+.workout-details > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .workout-details h4 {
   margin: 0 0 10px 0;
   font-size: 1.2em;
@@ -56,14 +61,17 @@ header a {
   color: #555;
 }
 .workout-details span {
-  position: absolute;
+  /* position: absolute;
   top: 20px;
-  right: 20px;
+  right: 20px; */
   cursor: pointer;
   background: #f1f1f1;
   padding: 6px;
   border-radius: 50%;
   color: #333;
+}
+.workout-details span + span {
+  margin-left: 5px;
 }
 
 @media screen and (max-width: 768px) {

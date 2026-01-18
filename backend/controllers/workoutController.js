@@ -79,21 +79,47 @@ const updateWorkout = async (req, res) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    res.status(404).json({ error: "No such workout" });
+    return res.status(404).json({ error: "No such workout" });
   }
 
-  const workout = await Workout.findOneAndUpdate(
-    { _id: id },
-    {
-      ...req.body,
-    }
-  );
+  // Verificar que el workout exista y pertenezca al usuario
+  const workout = await Workout.findOne({ _id: id });
 
   if (!workout) {
-    res.status(400).json({ error: "No such workout" });
+    return res.status(404).json({ error: "No such workout" });
   }
 
-  res.status(200).json(workout);
+  // Validar que el workout pertenezca al usuario
+  if (workout.user_id !== req.user._id.toString()) {
+    return res.status(403).json({ error: "Not authorized to update this workout" });
+  }
+
+  // Validar campos vacíos
+  const { title, load, reps } = req.body;
+  let emptyFields = [];
+
+  if (title !== undefined && !title) {
+    emptyFields.push("title");
+  }
+  if (load !== undefined && !load) {
+    emptyFields.push("load");
+  }
+  if (reps !== undefined && !reps) {
+    emptyFields.push("reps");
+  }
+
+  if (emptyFields.length > 0) {
+    return res.status(400).json({ error: "Please fill in all the fields", emptyFields });
+  }
+
+  // Actualizar el workout y devolver la versión actualizada
+  const updatedWorkout = await Workout.findOneAndUpdate(
+    { _id: id },
+    { ...req.body },
+    { new: true } // Devuelve el documento actualizado
+  );
+
+  res.status(200).json(updatedWorkout);
 };
 
 module.exports = {

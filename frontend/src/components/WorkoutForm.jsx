@@ -1,8 +1,8 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useWorkoutsContext } from "../hooks/useWorkoutsContext";
 import { useAuthContext } from "../hooks/useAuthContext";
 
-const WorkoutForm = () => {
+const WorkoutForm = ({ workoutToEdit = null, onEditComplete = null }) => {
     const { dispatch } = useWorkoutsContext();
     const { user } = useAuthContext();
     const [title, setTitle] = useState("");
@@ -10,6 +10,20 @@ const WorkoutForm = () => {
     const [reps, setReps] = useState("");
     const [error, setError] = useState(null);
     const [emptyFields, setEmptyFields] = useState([]);
+
+    // Cargar datos del workout si está en modo edición
+    useEffect(() => {
+        if (workoutToEdit) {
+            setTitle(workoutToEdit.title);
+            setLoad(workoutToEdit.load);
+            setReps(workoutToEdit.reps);
+        } else {
+            // Limpiar el formulario cuando no hay workout para editar
+            setTitle("");
+            setLoad("");
+            setReps("");
+        }
+    }, [workoutToEdit]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -21,8 +35,14 @@ const WorkoutForm = () => {
 
         const workout = { title, load, reps };
 
-        const response = await fetch("/api/workouts", {
-            method: "POST",
+        const url = workoutToEdit 
+            ? `/api/workouts/${workoutToEdit._id}` 
+            : "/api/workouts";
+        
+        const method = workoutToEdit ? "PATCH" : "POST";
+
+        const response = await fetch(url, {
+            method: method,
             body: JSON.stringify(workout),
             headers: {
                 "Content-Type": "application/json",
@@ -34,7 +54,7 @@ const WorkoutForm = () => {
 
         if (!response.ok) {
             setError(json.error);
-            setEmptyFields(json.emptyFields);
+            setEmptyFields(json.emptyFields || []);
         }
 
         if (response.ok) {
@@ -43,14 +63,21 @@ const WorkoutForm = () => {
             setReps("");
             setError(null);
             setEmptyFields([]);
-            console.log("new workout added", json);
-            dispatch({ type: "CREATE_WORKOUT", payload: json });
+            
+            if (workoutToEdit) {
+                dispatch({ type: "UPDATE_WORKOUT", payload: json });
+                if (onEditComplete) {
+                    onEditComplete(); // Callback para cerrar modo edición
+                }
+            } else {
+                dispatch({ type: "CREATE_WORKOUT", payload: json });
+            }
         }
     }
 
     return (
         <form className="create" onSubmit={handleSubmit} >
-            <h3>Add a New Workout</h3>
+            <h3>{workoutToEdit ? "Edit Workout" : "Add a New Workout"}</h3>
 
             <label>Exercise Title:</label>
             <input
@@ -73,7 +100,7 @@ const WorkoutForm = () => {
                 value={reps}
                 className={emptyFields.includes("reps") ? "error" : ""}
             />
-            <button>Add Workout</button>
+            <button>{workoutToEdit ? "Update Workout" : "Add Workout"}</button>
             {error && <div className="error">{error}</div>}
         </form>
     )
