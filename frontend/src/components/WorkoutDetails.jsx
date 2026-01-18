@@ -1,5 +1,6 @@
 import { useWorkoutsContext } from "../hooks/useWorkoutsContext"
 import { useAuthContext } from "../hooks/useAuthContext";
+import { API_URL } from "../config/api";
 
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 
@@ -8,7 +9,7 @@ const WorkoutDetails = ({ workout, onEdit }) => {
   const { user } = useAuthContext();
 
   const handleDelete = async () => {
-    const response = await fetch(`/api/workouts/${workout._id}`, {
+    const response = await fetch(`${API_URL}/api/workouts/${workout._id}`, {
       method: "DELETE",
       headers: {
         "Authorization": `Bearer ${user.token}`

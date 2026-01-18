@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useWorkoutsContext } from "../hooks/useWorkoutsContext";
 import { useAuthContext } from "../hooks/useAuthContext";
+import { API_URL } from "../config/api";
 
 const WorkoutForm = ({ workoutToEdit = null, onEditComplete = null }) => {
     const { dispatch } = useWorkoutsContext();
@@ -11,14 +12,14 @@ const WorkoutForm = ({ workoutToEdit = null, onEditComplete = null }) => {
     const [error, setError] = useState(null);
     const [emptyFields, setEmptyFields] = useState([]);
 
-    // Cargar datos del workout si está en modo edición
+    // Load workout data if in edit mode
     useEffect(() => {
         if (workoutToEdit) {
             setTitle(workoutToEdit.title);
             setLoad(workoutToEdit.load);
             setReps(workoutToEdit.reps);
         } else {
-            // Limpiar el formulario cuando no hay workout para editar
+            // Clear the form when there is no workout to edit.
             setTitle("");
             setLoad("");
             setReps("");
@@ -36,8 +37,8 @@ const WorkoutForm = ({ workoutToEdit = null, onEditComplete = null }) => {
         const workout = { title, load, reps };
 
         const url = workoutToEdit 
-            ? `/api/workouts/${workoutToEdit._id}` 
-            : "/api/workouts";
+            ? `${API_URL}/api/workouts/${workoutToEdit._id}` 
+            : `${API_URL}/api/workouts`;
         
         const method = workoutToEdit ? "PATCH" : "POST";
 
@@ -67,7 +68,7 @@ const WorkoutForm = ({ workoutToEdit = null, onEditComplete = null }) => {
             if (workoutToEdit) {
                 dispatch({ type: "UPDATE_WORKOUT", payload: json });
                 if (onEditComplete) {
-                    onEditComplete(); // Callback para cerrar modo edición
+                    onEditComplete(); // Callback to close edit mode
                 }
             } else {
                 dispatch({ type: "CREATE_WORKOUT", payload: json });
